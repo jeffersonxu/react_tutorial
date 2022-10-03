@@ -34,10 +34,10 @@ const schedule = {
 
 function App() {
   return (
-    <>
+    <div className="container main">
       <Banner title={schedule.title}></Banner>
       <CourseList courses={schedule.courses}></CourseList>
-    </>
+    </div>
   );
 }
 

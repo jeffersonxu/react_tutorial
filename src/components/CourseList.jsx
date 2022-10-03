@@ -1,20 +1,31 @@
 function CourseItem(props) {
     return (
-        <p>{props.term} {props.number} : {props.title}</p>        
+        <div className="card course-card m-1 p-2">
+            <div className="card-body">
+                <h5 className="card-title">{props.term} {props.number}</h5>
+                <p className="card-text">{props.title}</p>                   
+                <hr></hr>       
+                <p className="card-text">{props.time}</p>                        
+            </div>        
+        </div>
     )
 }
 
 function CourseList(props) {
     let courses = props.courses;
     const listItems = Object.keys(courses).map((key) =>
-        <CourseItem term={key} 
+        <CourseItem key={key}
+                    term={key} 
                     number={courses[key]['number']}
-                    title={courses[key]['title']}>
+                    title={courses[key]['title']}
+                    time={courses[key]['meets']}>
         </CourseItem>
     );
 
     return (
-       listItems   
+        <div className="course-list">
+            {listItems}
+        </div>       
     );
 }
 
