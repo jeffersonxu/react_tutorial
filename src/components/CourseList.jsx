@@ -2,41 +2,51 @@ import { useState } from "react";
 import MenuSelector from "./MenuSelector";
 
 const CourseList = ({courses}) => {
-  const [selection, setSelection] = useState(() => "Fall");
+  const [term, setTerm] = useState(() => "Fall");
+  const [selected, setSelected] = useState([]);
+
+  const toggleSelected = (item) => setSelected(
+    selected.includes(item)
+    ? selected.filter(x => x !== item)
+    : [...selected, item]
+  );
+
   return (
     <div>
-      <MenuSelector selection={selection} setSelection={setSelection} />
-      <FilteredCourseList selection={selection} courses={courses}/>
+      <MenuSelector selection={term} setSelection={setTerm} />
+      <FilteredCourseList term={term} courses={courses} selected={selected} toggleSelected={toggleSelected}/>
     </div>
   );
 }
 
 function CourseItem(props) {
+    const {toggleSelected, selected, id, course} = props
+
     return (
-        <div className="card course-card m-1 p-2">
-            <div className="card-body">
-                <h5 className="card-title">{props.term} {props.number}</h5>
-                <p className="card-text">{props.title}</p>                   
+        <div className={`card course-card m-1 p-2 ${selected.includes(id) ? 'selected' : ''}`} onClick={() => toggleSelected(id)}>
+            <div className="card-body">            
+                <h5 className="card-title">{course.term} {course.number}</h5>
+                <p className="card-text">{course.title}</p>                   
                 <hr></hr>       
-                <p className="card-text">{props.time}</p>                        
+                <p className="card-text">{course.meets}</p>                        
             </div>        
         </div>
-    )
+    )    
 }
 
 function FilteredCourseList(props) {
-    let courses = props.courses;
-    var filteredCourses = Object.keys(courses).reduce((p, c) => {    
-        if (courses[c]['term'] === props.selection) p[c] = courses[c];
+    const {courses, term, selected, toggleSelected} = props;    
+    let filteredCourses = Object.keys(courses).reduce((p, c) => {    
+        if (courses[c]['term'] === term) p[c] = courses[c];
         return p;
         }, {});
       
     const listItems = Object.keys(filteredCourses).map((key) =>
         <CourseItem key={key}
-                    term={filteredCourses[key]['term']} 
-                    number={filteredCourses[key]['number']}
-                    title={filteredCourses[key]['title']}
-                    time={filteredCourses[key]['meets']}>
+                    id={key}
+                    course = {filteredCourses[key]}
+                    selected={selected} 
+                    toggleSelected={toggleSelected}>                    
         </CourseItem>
     );
 
@@ -45,7 +55,6 @@ function FilteredCourseList(props) {
             {listItems}
         </div>               
     );
-
 }
 
 export default CourseList;

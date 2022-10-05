@@ -8,3 +8,7 @@
 .filter-btn {
   margin-right: 0.5em;
 }
+.selected {
+  background-color:lemonchiffon;
+  color: green;
+}
