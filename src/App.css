@@ -5,3 +5,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, 14rem);
 }
+.filter-btn {
+  margin-right: 0.5em;
+}

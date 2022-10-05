@@ -1,3 +1,16 @@
+import { useState } from "react";
+import MenuSelector from "./MenuSelector";
+
+const CourseList = ({courses}) => {
+  const [selection, setSelection] = useState(() => "Fall");
+  return (
+    <div>
+      <MenuSelector selection={selection} setSelection={setSelection} />
+      <FilteredCourseList selection={selection} courses={courses}/>
+    </div>
+  );
+}
+
 function CourseItem(props) {
     return (
         <div className="card course-card m-1 p-2">
@@ -11,22 +24,28 @@ function CourseItem(props) {
     )
 }
 
-function CourseList(props) {
+function FilteredCourseList(props) {
     let courses = props.courses;
-    const listItems = Object.keys(courses).map((key) =>
+    var filteredCourses = Object.keys(courses).reduce((p, c) => {    
+        if (courses[c]['term'] === props.selection) p[c] = courses[c];
+        return p;
+        }, {});
+      
+    const listItems = Object.keys(filteredCourses).map((key) =>
         <CourseItem key={key}
-                    term={key} 
-                    number={courses[key]['number']}
-                    title={courses[key]['title']}
-                    time={courses[key]['meets']}>
+                    term={filteredCourses[key]['term']} 
+                    number={filteredCourses[key]['number']}
+                    title={filteredCourses[key]['title']}
+                    time={filteredCourses[key]['meets']}>
         </CourseItem>
     );
 
-    return (
+    return (        
         <div className="course-list">
             {listItems}
-        </div>       
+        </div>               
     );
+
 }
 
 export default CourseList;
