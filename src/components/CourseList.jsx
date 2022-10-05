@@ -1,9 +1,16 @@
 import { useState } from "react";
 import MenuSelector from "./MenuSelector";
+import CoursePlanBody from "./CoursePlanBody";
+import Modal from './Modal';
 
 const CourseList = ({courses}) => {
   const [term, setTerm] = useState(() => "Fall");
   const [selected, setSelected] = useState([]);
+  const [open, setOpen] = useState(false);
+
+  const openModal = () => setOpen(true);
+  const closeModal = () => setOpen(false);
+  
 
   const toggleSelected = (item) => setSelected(
     selected.includes(item)
@@ -14,6 +21,10 @@ const CourseList = ({courses}) => {
   return (
     <div>
       <MenuSelector selection={term} setSelection={setTerm} />
+      <button className="course-plan-btn btn btn-outline-dark" onClick={openModal}>Course Plan</button>
+      <Modal open={open} close={closeModal}>
+        <CoursePlanBody selected={selected} courses={courses}></CoursePlanBody>
+      </Modal>
       <FilteredCourseList term={term} courses={courses} selected={selected} toggleSelected={toggleSelected}/>
     </div>
   );
