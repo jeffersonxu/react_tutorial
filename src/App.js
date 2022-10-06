@@ -1,8 +1,10 @@
 import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useJsonQuery } from './utilities/fetch';
 import Banner from './components/Banner'
 import CourseList from './components/CourseList'
+import CourseForm from './components/CourseForm';
 
 function Main() {
   const [data, isLoading, error] = useJsonQuery('https://courses.cs.northwestern.edu/394/guides/data/cs-courses.php');
@@ -14,7 +16,12 @@ function Main() {
   return (
     <div className="container main">
       <Banner title={data.title}></Banner>
-      <CourseList courses={data.courses}></CourseList>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<CourseList courses={data.courses} />} />
+          <Route path="/course/:id" element={<CourseForm courses={data.courses} />} />            
+        </Routes>
+      </BrowserRouter>
     </div>  )
 }
 

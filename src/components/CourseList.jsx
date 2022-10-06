@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+
 import MenuSelector from "./MenuSelector";
 import CoursePlanBody from "./CoursePlanBody";
 import updateConflicts from "../utilities/helper.js"
 import Modal from './Modal';
+import { BsFillPencilFill } from "react-icons/bs";
 
 const CourseList = ({courses}) => {
   const [term, setTerm] = useState(() => "Fall");
@@ -46,6 +49,7 @@ function CourseItem(props) {
 
     return (
         <div className={`card course-card m-1 p-2 ${course_style}`} onClick={() => toggleSelected(id)}>
+            <Link to={`/course/${id}`}><BsFillPencilFill/></Link>            
             <div className="card-body">            
                 <h5 className="card-title">{course.term} {course.number}</h5>
                 <p className="card-text">{course.title}</p>                   
