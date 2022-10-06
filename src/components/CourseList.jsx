@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MenuSelector from "./MenuSelector";
 import CoursePlanBody from "./CoursePlanBody";
+import updateConflicts from "../utilities/helper.js"
 import Modal from './Modal';
 
 const CourseList = ({courses}) => {
   const [term, setTerm] = useState(() => "Fall");
   const [selected, setSelected] = useState([]);
   const [open, setOpen] = useState(false);
+  const [conflicts, setConflicts] = useState([]);
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
-  
 
   const toggleSelected = (item) => setSelected(
     selected.includes(item)
@@ -18,6 +19,10 @@ const CourseList = ({courses}) => {
     : [...selected, item]
   );
 
+  useEffect(() => {
+    setConflicts(updateConflicts(selected, courses));
+  }, [selected, courses]);
+  
   return (
     <div>
       <MenuSelector selection={term} setSelection={setTerm} />
@@ -25,16 +30,22 @@ const CourseList = ({courses}) => {
       <Modal open={open} close={closeModal}>
         <CoursePlanBody selected={selected} courses={courses}></CoursePlanBody>
       </Modal>
-      <FilteredCourseList term={term} courses={courses} selected={selected} toggleSelected={toggleSelected}/>
+      <FilteredCourseList term={term} courses={courses} conflicts={conflicts} selected={selected} toggleSelected={toggleSelected}/>
     </div>
   );
 }
 
 function CourseItem(props) {
-    const {toggleSelected, selected, id, course} = props
+    const {toggleSelected, selected, conflicts, id, course} = props
+    let course_style = "";
+    if(selected.includes(id)){
+        course_style = "selected"
+    } else if(conflicts.includes(course)){
+        course_style = "disabled"    
+    }
 
     return (
-        <div className={`card course-card m-1 p-2 ${selected.includes(id) ? 'selected' : ''}`} onClick={() => toggleSelected(id)}>
+        <div className={`card course-card m-1 p-2 ${course_style}`} onClick={() => toggleSelected(id)}>
             <div className="card-body">            
                 <h5 className="card-title">{course.term} {course.number}</h5>
                 <p className="card-text">{course.title}</p>                   
@@ -46,7 +57,7 @@ function CourseItem(props) {
 }
 
 function FilteredCourseList(props) {
-    const {courses, term, selected, toggleSelected} = props;    
+    const {courses, term, selected, conflicts, toggleSelected} = props;    
     let filteredCourses = Object.keys(courses).reduce((p, c) => {    
         if (courses[c]['term'] === term) p[c] = courses[c];
         return p;
@@ -56,7 +67,8 @@ function FilteredCourseList(props) {
         <CourseItem key={key}
                     id={key}
                     course = {filteredCourses[key]}
-                    selected={selected} 
+                    conflicts ={conflicts}
+                    selected={selected}                     
                     toggleSelected={toggleSelected}>                    
         </CourseItem>
     );

@@ -15,3 +15,9 @@
 .course-plan-btn{
   float: right;
 }
+.disabled {
+  background-color: gray;
+  color:white;
+  opacity: 0.3;
+  pointer-events: none;
+}
