@@ -1,10 +1,20 @@
-import {useRef} from 'react';
 import { Link, useParams } from "react-router-dom";
+import { useFormData } from '../utilities/useFormData';
+
+const validateUserData = (key, val) => {
+    switch (key) {
+      case 'title':
+        return /(^\w\w)/.test(val) ? '' : 'Title must be least two characters';
+      case 'meetingTime':
+        return /^(\w)+\s\d{1,2}:\d{1,2}-\d{1,2}:\d{1,2}$/.test(val) ? '' : 'must contain days and start-end, e.g., MWF 12:00-13:20';
+      default: return '';
+    }
+  };
+
 function CourseForm(props) {
     let { id } = useParams();
     let course = props.courses[id]
-    const ref = useRef(null);
-
+    const [state, change] = useFormData(validateUserData, course);
     const handleSubmit = () => {
         console.log("test")
     }
@@ -14,14 +24,19 @@ function CourseForm(props) {
             <Link to="/">
                 <button type="button" className="btn btn-danger">Cancel</button>                      
             </Link>            
+            {state.errors && <div className="alert alert-danger" role="alert">
+                {JSON.stringify(state.errors)}
+            </div>
+            }
+            
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
-                    <input type="text" className="form-control" id="title" ref={ref} defaultValue={course.title} />                
+                    <input name="title" type="text" className="form-control" id="title" defaultValue={course.title} state={state} onChange={change} />                
                 </div>
                 <div className="form-group">
                     <label htmlFor="meeting_time">Meeting Time</label>
-                    <input type="text" className="form-control" id="meeting_time" ref={ref} defaultValue={course.meets}/>
+                    <input name="meetingTime" type="text" className="form-control" id="meetingTime" defaultValue={course.meets} state={state} onChange={change}/>
                 </div>
             </form>
         </>
