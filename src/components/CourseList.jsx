@@ -50,7 +50,7 @@ function CourseItem(props) {
     return (
         <div className={`card course-card m-1 p-2 ${course_style}`} onClick={() => toggleSelected(id)}>
             <Link to={`/course/${id}`}><BsFillPencilFill/></Link>            
-            <div className="card-body">            
+            <div className="card-body" data-cy="course">            
                 <h5 className="card-title">{course.term} {course.number}</h5>
                 <p className="card-text">{course.title}</p>                   
                 <hr></hr>       
